@@ -48,7 +48,7 @@ def confirmInput():
     inp2 = input_variable2.get()
     if(inp1 != ''): out1 = binaryReadabilityHelper(binaryTransform(inp1))
     if(inp2 != ''): out2 = binaryReadabilityHelper(binaryTransform(inp2))
-    plaintext.config(text=out2)
+    plaintext.config(text=out1)
     xorString = animateXor(out1,out2)
  
 
@@ -91,7 +91,7 @@ def animateXor(word1,word2):
                 result += showCalculation(word1[i], word2[i],outputCalculation)
                 showResult(outputXor,result)
                 tab2.update()
-                time.sleep(0.500)
+                time.sleep(1)
         displayNormal(labelLine0, word1)
         displayNormal(labelLine1, word2)
         tab2.update()
