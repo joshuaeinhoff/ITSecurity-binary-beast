@@ -6,7 +6,7 @@ photo = tk.PhotoImage(file = 'assets/xorIcon.png')
 window.wm_iconphoto(False, photo)
 # width= window.winfo_screenwidth() 
 # height= window.winfo_screenheight()
-window.geometry('1000x500')
+#window.geometry('1000x500')
 window.title('XorVizualization')
 font = 'JetBrains Mono'
 fontSize = 16
@@ -16,10 +16,11 @@ xorString = ''
 
 def binaryTransform(word):
     # there is an issue with the bit conversion -> losing the first bit
-    # binary for a = 01100001 -> our output= 01100001
+    # binary for a = 01100001 -> our output= 1100001
     byte = word.encode()
     binary_int= int.from_bytes(byte,"big")
     binary_string = bin(binary_int)
+    # removing '0b' at beginning of String and adding 0 because of the before mentioned problem
     returnString = str(0)+binary_string[2:]
     return returnString
 
@@ -36,6 +37,7 @@ def confirmInput():
     inp2 = input_variable2.get()
     if(inp1 != ''): out1 = binaryReadabilityHelper(binaryTransform(inp1))
     if(inp2 != ''): out2 = binaryReadabilityHelper(binaryTransform(inp2))
+    plaintext.config(text=out2)
     xorString = animateXor(out1,out2)
  
 
@@ -91,7 +93,7 @@ def showCalculation(a, b, label):
     return str(xor)
 
 def showResult(label, result):
-    label.config(text=result)
+    label.config(text=binaryReadabilityHelper(result))
 
 
 def recoverPlain():
@@ -99,57 +101,67 @@ def recoverPlain():
     inp2 = input_variable2.get()
     if(xorString != ''):
         if(inp2 != ''): out2 = binaryReadabilityHelper(binaryTransform(inp2))
-        xorString = animateXor(xorString,out2)
+        xorString = animateXor(binaryReadabilityHelper(xorString),out2)
 
 
-
+# -------- Input Section --------
 input_variable1 = tk.StringVar()
 input_variable2 = tk.StringVar()
-
-tk.Label(window, text='Plaintext').grid(row=0, column = 0, pady='5', padx='5')
-tk.Label(window, text='Initialization Vector').grid(row=0, column = 4, pady='5', padx='5')
+tk.Label(window, text='Plaintext').grid(column=0, row=0, pady='5', padx='5')
+tk.Label(window, text='Initialization Vector').grid(column=0, row=1, pady='5', padx='5')
 input1 = tk.Entry(window, textvariable=input_variable1)
 input2 = tk.Entry(window, textvariable=input_variable2)
-input1.grid(row=1, column=0, padx=10)
-input2.grid(row=1, column=4, padx=10)
+input1.grid(column=1, row=0,padx=10)
+input2.grid(column=1, row=1, padx=10)
+# -------- Input Section --------
 
 
-
-# Button Creation 
+# -------- Button Section --------
 confirmButton = tk.Button(window, 
                         text = "Confirm",  
                         command = confirmInput) 
-confirmButton.grid(row=1, column=5)
+confirmButton.grid(column=5, row=5)
 
 reXorButton = tk.Button(window,
                         text="Recover Plaintext",
                         command= recoverPlain)
-reXorButton.grid(row=5, column=5)
+reXorButton.grid(column=5, row=6)
+# -------- Button Section --------
 
+# -------- Plaintext label --------
+plaintext = tk.Label(window, font=(font,12))
+plaintext.grid(column=5,row=0)
 
-# Label Creation 
+# -------- Labelline 1 --------
 outputLabel0 = tk.Label(window, padx=0,font=(font,fontSize))
-outputLabel0.grid(row=5,column=1)
+outputLabel0.grid(column=2, row=2)
 outputLabel1 = tk.Label(window, padx=0, font=(font,fontSize))
-outputLabel1.grid(row=5,column=2)
+outputLabel1.grid(column=3, row=2)
 outputLabel2 = tk.Label(window, padx=0, font=(font,fontSize))
-outputLabel2.grid(row=5,column=3)
+outputLabel2.grid(column=4, row=2)
 labelLine0 = [outputLabel0,outputLabel1,outputLabel2]
+# -------- Labelline 1 --------
 
-outputLabel3 = tk.Label(window, padx=0,font=(font,fontSize))
-outputLabel3.grid(row=6,column=1)
+
+# -------- Labelline 2 --------
+outputLabel3 = tk.Label(window, padx=0, font=(font,fontSize))
+outputLabel3.grid(column=2, row=3)
 outputLabel4 = tk.Label(window, padx=0, font=(font,fontSize))
-outputLabel4.grid(row=6,column=2)
+outputLabel4.grid(column=3, row=3)
 outputLabel5 = tk.Label(window, padx=0, font=(font,fontSize))
-outputLabel5.grid(row=6,column=3)
+outputLabel5.grid(column=4, row=3)
 labelLine1 = [outputLabel3,outputLabel4,outputLabel5]
+# -------- Labelline 2 --------
 
+# -------- Calculation --------
 outputCalculation = tk.Label(window, font=(font, fontSize))
-outputCalculation.grid(row=7, column=1)
+outputCalculation.grid(column=2, row=4)
+# -------- Calculation --------
 
-
+# -------- Result --------
 outputXor = tk.Label(window, font=(font,fontSize))
-outputXor.grid(row=8, column=1)
+outputXor.grid(column=2, row=5)
+# -------- Result --------
 
 
 window.mainloop()
