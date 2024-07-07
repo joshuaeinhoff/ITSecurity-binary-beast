@@ -8,6 +8,10 @@ window.wm_iconphoto(False, photo)
 # height= window.winfo_screenheight()
 window.geometry('1000x500')
 window.title('XorVizualization')
+font = 'JetBrains Mono'
+fontSize = 16
+
+xorString = '' 
 
 
 def binaryTransform(word):
@@ -16,23 +20,25 @@ def binaryTransform(word):
     byte = word.encode()
     binary_int= int.from_bytes(byte,"big")
     binary_string = bin(binary_int)
-    return binary_string
+    returnString = str(0)+binary_string[2:]
+    return returnString
 
 
 def binaryReadabilityHelper(word):
-    # remove first two characters (0b) add 0 so its accurate to binary number
-    returnString = str(0)+word[2:]
-    returnString = ' '.join([returnString[i:i+8] for i in range(0, len(returnString), 8)])
+    # add space after each 8 bits
+    returnString = ' '.join([word[i:i+8] for i in range(0, len(word), 8)])
     return returnString
 
 
 def confirmInput(): 
+    global xorString
     inp1 = input_variable1.get() 
     inp2 = input_variable2.get()
     if(inp1 != ''): out1 = binaryReadabilityHelper(binaryTransform(inp1))
     if(inp2 != ''): out2 = binaryReadabilityHelper(binaryTransform(inp2))
-    animateXor(out1,out2)
+    xorString = animateXor(out1,out2)
  
+
 def binaryXor(word1, word2):
     #loop through word and xor each of the binary values
     if(len(word1) == len(word2)):
@@ -44,13 +50,12 @@ def binaryXor(word1, word2):
 
 
 def highlightCharacter(labels, word, index):
-
     beforeIndex = word[:index]
     atIndex = word[index]
     afterIndex = word[index+1:]
-    print(f'Before: {beforeIndex}')
-    print(f'At: {atIndex}')
-    print(f'After: {afterIndex}')
+    # print(f'Before: {beforeIndex}')
+    # print(f'At: {atIndex}')
+    # print(f'After: {afterIndex}')
 
     labels[0].config(text=beforeIndex)
     labels[1].config(text=atIndex, fg="#00ff00")
@@ -64,17 +69,37 @@ def displayNormal(labels, word):
 
 
 def animateXor(word1,word2):
+    result = ''
     if(len(word1) == len(word2)):
         for i in range(0,len(word1)):
             if (word1[i] != ' ' and word2[i] != ' '):
                 highlightCharacter(labelLine0, word1, i)
                 highlightCharacter(labelLine1, word2, i)
+                result += showCalculation(word1[i], word2[i],outputCalculation)
+                showResult(outputXor,result)
                 window.update()
                 time.sleep(0.500)
         displayNormal(labelLine0, word1)
         displayNormal(labelLine1, word2)
         window.update()
+    return result
 
+def showCalculation(a, b, label):
+    xor = int(a)^int(b)
+    out = f'{a} ^ {b} = {xor}'
+    label.config(text=out)
+    return str(xor)
+
+def showResult(label, result):
+    label.config(text=result)
+
+
+def recoverPlain():
+    global xorString
+    inp2 = input_variable2.get()
+    if(xorString != ''):
+        if(inp2 != ''): out2 = binaryReadabilityHelper(binaryTransform(inp2))
+        xorString = animateXor(xorString,out2)
 
 
 
@@ -96,25 +121,35 @@ confirmButton = tk.Button(window,
                         command = confirmInput) 
 confirmButton.grid(row=1, column=5)
 
+reXorButton = tk.Button(window,
+                        text="Recover Plaintext",
+                        command= recoverPlain)
+reXorButton.grid(row=5, column=5)
+
 
 # Label Creation 
-outputLabel0 = tk.Label(window, padx=0,font=("JetBrains Mono",16))
+outputLabel0 = tk.Label(window, padx=0,font=(font,fontSize))
 outputLabel0.grid(row=5,column=1)
-outputLabel1 = tk.Label(window, padx=0, font=("JetBrains Mono",16))
+outputLabel1 = tk.Label(window, padx=0, font=(font,fontSize))
 outputLabel1.grid(row=5,column=2)
-outputLabel2 = tk.Label(window, padx=0, font=("JetBrains Mono",16))
+outputLabel2 = tk.Label(window, padx=0, font=(font,fontSize))
 outputLabel2.grid(row=5,column=3)
 labelLine0 = [outputLabel0,outputLabel1,outputLabel2]
 
-outputLabel3 = tk.Label(window, padx=0,font=("JetBrains Mono",16))
+outputLabel3 = tk.Label(window, padx=0,font=(font,fontSize))
 outputLabel3.grid(row=6,column=1)
-outputLabel4 = tk.Label(window, padx=0, font=("JetBrains Mono",16))
+outputLabel4 = tk.Label(window, padx=0, font=(font,fontSize))
 outputLabel4.grid(row=6,column=2)
-outputLabel5 = tk.Label(window, padx=0, font=("JetBrains Mono",16))
+outputLabel5 = tk.Label(window, padx=0, font=(font,fontSize))
 outputLabel5.grid(row=6,column=3)
 labelLine1 = [outputLabel3,outputLabel4,outputLabel5]
 
-outputXorFrame = tk.LabelFrame(window)
-outputXor = tk.Label(outputXorFrame, height=3)
-outputXorFrame.grid(row=7, column=1)
+outputCalculation = tk.Label(window, font=(font, fontSize))
+outputCalculation.grid(row=7, column=1)
+
+
+outputXor = tk.Label(window, font=(font,fontSize))
+outputXor.grid(row=8, column=1)
+
+
 window.mainloop()
