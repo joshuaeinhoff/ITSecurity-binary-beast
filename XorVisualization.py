@@ -59,17 +59,13 @@ def binaryXor(word1, word2):
             if (word1[i] != ' ' and word2[i] != ' '):
                 print(f'{i} w1: {int(word1[i])} w2: {int(word2[i])}')
     else: 
-        print('Info: Words have to be the same size. Please try again.')
+        print('Info: Words should be the same size. Please try again.')
 
 
 def highlightCharacter(labels, word, index):
     beforeIndex = word[:index]
     atIndex = word[index]
     afterIndex = word[index+1:]
-    # print(f'Before: {beforeIndex}')
-    # print(f'At: {atIndex}')
-    # print(f'After: {afterIndex}')
-
     labels[0].config(text=beforeIndex)
     labels[1].config(text=atIndex, fg="#00ff00")
     labels[2].config(text=afterIndex)

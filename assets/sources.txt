@@ -1,2 +1,3 @@
 xorIcon-source: https://thenounproject.com/icon/xor-gate-3834989/
-
+CBC-encrypt: https://de.wikipedia.org/wiki/Datei:CBC_encryption.svg
+CBC-Decrypt: https://de.wikipedia.org/wiki/Datei:CBC_decryption.svg
